@@ -161,6 +161,7 @@ fresas-alo/
 │                   ├── cubiertas-crud/
 │                   ├── precios-crud/
 │                   └── populares-crud/
+│               └── empleados/            ← Gestión de accesos (Admin vs Empleado)
 ```
 
 ---
@@ -245,6 +246,15 @@ export interface Visita {
   id: string;
   timestamp: Date;
 }
+
+export type Role = 'admin' | 'empleado' | 'inactivo';
+
+export interface Usuario {
+  id: string;
+  nombre: string;
+  email: string;
+  role: Role;
+}
 ```
 
 ---
@@ -262,6 +272,7 @@ export interface Visita {
 | `gastos` | Gastos del negocio (Finanzas) |
 | `visits` | Historial de visitas por timestamp |
 | `config` | Documentos: `branding` (logo, contacto) y `stats` (visitas totales) |
+| `usuarios` | Roles de acceso y gestión de empleados (RBAC) |
 
 **Reglas Firestore de Seguridad** a configurar: Lectura libre para catálogos y visitas, pero escritura restringida a usuarios autenticados (excepto `pedidos` y `visits` que permiten `write: if true`).
 
@@ -271,10 +282,11 @@ export interface Visita {
 
 1. **Dashboard (`DashboardComponent`)**: Visión general con métricas (total pedidos, ingresos, productos activos).
 2. **Punto de Venta (`PosComponent`)**: Permite al administrador crear pedidos de mostrador directamente desde el panel sin tener que usar WhatsApp. Actualiza la base de datos de inmediato.
-3. **Gestión de Pedidos (`PedidosComponent`)**: Lista los pedidos en tiempo real. Permite cambiar el `status` del pedido (recibido, en preparación, enviado, entregado, cancelado) y eliminar órdenes.
+3. **Gestión de Pedidos (`PedidosComponent`)**: Lista los pedidos en tiempo real. Permite cambiar el `status` del pedido (recibido, en preparación, enviado, entregado, cancelado) y eliminar órdenes (sólo administradores).
 4. **Finanzas (`FinanzasComponent`)**: Muestra ingresos (basado en pedidos "entregados" y "enviados") menos egresos (gastos creados manualmente). Permite crear nuevos gastos categorizados y calcular la Utilidad Neta en diferentes periodos (hoy, semana, mes, personalizado).
 5. **Clientes Frecuentes (`ClientesComponent`)**: Consolida la información agrupando por `telefonoCliente` para mostrar cantidad de pedidos, total gastado y última fecha de compra por cliente.
 6. **Analíticas (`AnalyticsComponent`)**: Usa `chart.js` para graficar el flujo de visitas a la página principal por hora y por día, usando la colección `visits`.
+7. **Control de Accesos (RBAC)**: Sistema dual (`admin` vs `empleado`). El empleado tiene un menú lateral restringido y no puede borrar pedidos. El módulo **Empleados** permite al admin registrar (usando app secundaria de Firebase para no cerrar su sesión) y desactivar accesos.
 
 ---
 
