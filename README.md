@@ -1,59 +1,61 @@
-# FresasAlo
+# 🍓 Fresas con Crema ALO
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
+Aplicación web progresiva (PWA) completa para la gestión y recepción de pedidos de un negocio de fresas con crema. Construida con las últimas tecnologías web para ofrecer una experiencia rápida, offline-first y con un panel de administración sumamente robusto.
 
-## Development server
+## 🚀 Características Principales
 
-To start a local development server, run:
+### Para los Clientes (Tienda Pública PWA)
+- **Catálogo Dinámico:** Menú interactivo con productos, tamaños, cubiertas y toppings actualizados en tiempo real.
+- **Soporte Offline (Sin Conexión):** Gracias a `IndexedDB` y Service Workers, los usuarios pueden armar su pedido y enviarlo incluso si la conexión a internet es inestable. El sistema se sincroniza en segundo plano al recuperar la conexión.
+- **Instalable:** Se puede instalar como una aplicación nativa en dispositivos móviles (iOS/Android) y escritorio.
+- **Integración con WhatsApp:** Envío de pedidos calculados y perfectamente formateados directamente al WhatsApp del local.
+- **Diseño Premium:** Interfaz oscura, moderna, con efectos "glassmorphism", brillos neón y micro-interacciones.
 
-```bash
-ng serve
-```
+### Para el Administrador (Panel ALO)
+- **Punto de Venta (POS):** Interfaz ultrarrápida para tomar pedidos físicos directamente en mostrador.
+- **Gestión de Pedidos (Kanban):** Control total sobre el ciclo de vida de cada orden (Pendiente, En Preparación, Enviado, Entregado, Cancelado).
+- **Finanzas y Utilidad:** Registro automatizado de ingresos, creación de gastos (Insumos, Sueldos, etc.) y cálculo de la **Ganancia Libre (Utilidad Neta)** por periodo.
+- **Analíticas Reales:** Gráficos interactivos (`Chart.js`) para medir el tráfico exacto de visitas por día y hora.
+- **Clientes Frecuentes (CRM):** Historial inteligente que agrupa compras por número de teléfono para identificar a los mejores clientes.
+- **Catálogo / Inventario (CRUD):** Administración visual para agregar o editar Tamaños, Toppings, Cubiertas y "Los Más Pedidos" (con subida de imágenes a Firebase Storage).
+- **Configuraciones:** Control del logotipo, información de contacto y enlaces.
+- **Imprimir Menú:** Generación de un layout en blanco y negro optimizado para impresión térmica o física.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## ⚙️ Stack Tecnológico
 
-## Code scaffolding
+- **Framework Core:** Angular 21.2 (100% Signals, Standalone Components, nueva sintaxis de plantillas `@if`, `@for`).
+- **Estilos:** Tailwind CSS 4 + PostCSS (Variables CSS personalizadas para el tema Neón).
+- **Backend as a Service:** Firebase 11 (Firestore, Auth, Storage) integrado vía AngularFire 20.
+- **Offline & PWA:** Angular Service Worker (`@angular/pwa`) + IndexedDB API nativa.
+- **Gráficas:** Chart.js v4 + ng2-charts.
+- **Hosting:** Optimizado para Netlify.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🛠️ Requisitos e Instalación
 
-```bash
-ng generate component component-name
-```
+1. Asegúrate de tener **Node.js** (v20 o superior) y **Angular CLI 21**.
+2. Instala las dependencias del proyecto:
+   ```bash
+   npm install
+   ```
+3. Levanta el servidor local de desarrollo:
+   ```bash
+   npm start
+   # o
+   ng serve
+   ```
+4. Visita `http://localhost:4200` en tu navegador.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+*Nota:* Si configuras tu propio proyecto de Firebase, debes reemplazar las credenciales en `src/environments/environment.ts`.
 
-```bash
-ng generate --help
-```
+## 🔒 Reglas de Seguridad de Firestore
 
-## Building
+El proyecto requiere reglas de base de datos específicas para funcionar (lectura pública para el catálogo, lectura/escritura privada para administración, y permisos especiales para el registro de órdenes y analíticas).
+Asegúrate de copiar el contenido del archivo `firestore.rules` incluido en este repositorio directamente en la consola de Firebase -> Firestore Database -> Reglas.
 
-To build the project run:
+## 📦 Compilación (Producción)
 
+Para generar la versión optimizada lista para producción:
 ```bash
 ng build
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Los artefactos generados se guardarán en `dist/fresas-alo/browser/`.
