@@ -1,0 +1,191 @@
+<div style="background:linear-gradient(135deg,#0d0d12 0%,#1a0a1f 50%,#0d0d12 100%); min-height:100vh; padding-bottom:100px;">
+
+  <!-- HERO -->
+  <section style="position:relative; overflow:hidden; padding:3rem 1rem 2.5rem; text-align:center;">
+    <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+      <div style="position:absolute; top:15%; left:10%; width:180px; height:180px; border-radius:50%; background:rgba(192,38,211,0.06); filter:blur(40px);"></div>
+      <div style="position:absolute; top:40%; right:8%; width:140px; height:140px; border-radius:50%; background:rgba(192,38,211,0.08); filter:blur(30px);"></div>
+      <div style="position:absolute; bottom:10%; left:30%; width:200px; height:200px; border-radius:50%; background:rgba(134,25,143,0.05); filter:blur(50px);"></div>
+    </div>
+    <div style="position:relative; z-index:1;">
+      <div style="position:relative; width:160px; height:160px; margin:0 auto 1.5rem; display:flex; align-items:center; justify-content:center;">
+        @if (!logoLoaded) {
+          <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+            <div class="loader-spinner"></div>
+          </div>
+        }
+        @if (logoError || !fb.logoUrl()) {
+          <div style="font-size:4rem; display:flex; align-items:center; justify-content:center; width:100%; height:100%;">🍓</div>
+        } @else {
+          <img [src]="fb.logoUrl()" alt="Fresas con Crema ALO" class="logo-img"
+            (load)="onLogoLoad()" (error)="onLogoError()"
+            (animate.enter)="anim.neonPop($event)"
+            [style.visibility]="logoLoaded ? 'visible' : 'hidden'"
+            style="width:160px; height:160px; object-fit:contain; transition:opacity 0.3s;" />
+        }
+      </div>
+      <h1 (animate.enter)="anim.fadeUp($event)"
+        style="font-family:'Cinzel',serif; font-size:clamp(1.6rem,5vw,2.4rem); color:var(--texto-primary); text-shadow:0 0 20px var(--neon-glow); opacity:0;">
+        Fresas con Crema ALO
+      </h1>
+      <p (animate.enter)="anim.fadeIn($event)"
+        style="font-family:'Nunito',sans-serif; color:var(--neon-light); margin-top:0.5rem; font-size:1.05rem; font-weight:600; opacity:0;">
+        ¡Arma tu pedido perfecto!
+      </p>
+      <div (animate.enter)="anim.scaleIn($event)"
+        style="width:80px; height:2px; background:linear-gradient(90deg,transparent,var(--neon),transparent); margin:1.25rem auto 0; opacity:0;">
+      </div>
+    </div>
+  </section>
+
+  <!-- MÁS PEDIDOS -->
+  @if (fb.populares().length > 0) {
+    <section style="max-width:700px; margin:0 auto 2rem; padding:0 1rem;">
+      <h2 (animate.enter)="anim.slideLeft($event)"
+        style="font-family:'Cinzel',serif; font-size:1.2rem; color:var(--neon-light); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; opacity:0;">
+        ⭐ Los más pedidos
+      </h2>
+      <div (animate.enter)="anim.cardStagger($event)"
+        style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; opacity:0;">
+        @for (popular of fb.populares(); track popular.id) {
+          <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.25); border-radius:14px; overflow:hidden; transition:all 0.3s; cursor:default;"
+            onmouseenter="this.style.borderColor='rgba(192,38,211,0.7)'; this.style.boxShadow='0 0 24px rgba(192,38,211,0.3)'; this.style.transform='translateY(-3px)'"
+            onmouseleave="this.style.borderColor='rgba(192,38,211,0.25)'; this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+            @if (popular.imageUrl) {
+              <div style="position:relative; width:100%; height:130px; background:var(--bg-surface); display:flex; align-items:center; justify-content:center;">
+                @if (!popularesLoaded[popular.id]) {
+                  <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><div class="loader-spinner"></div></div>
+                }
+                @if (popularesError[popular.id]) {
+                  <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2.5rem;">🍓</div>
+                } @else {
+                  <img [src]="popular.imageUrl" [alt]="popular.nombre"
+                    (load)="onPopularLoad(popular.id)" (error)="onPopularError(popular.id)"
+                    [style.visibility]="popularesLoaded[popular.id] ? 'visible' : 'hidden'"
+                    style="width:100%; height:100%; object-fit:cover; transition:opacity 0.3s;" />
+                }
+              </div>
+            } @else {
+              <div style="width:100%; height:130px; background:var(--bg-surface); display:flex; align-items:center; justify-content:center; font-size:2.5rem;">🍓</div>
+            }
+            <div style="padding:0.75rem;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+                <p style="font-family:'Nunito',sans-serif; font-weight:700; font-size:0.9rem; color:var(--texto-primary); margin:0;">{{ popular.nombre }}</p>
+                <button (click)="sharePopular(popular)" title="Compartir"
+                  style="background:none; border:none; color:var(--neon-light); cursor:pointer; padding:0.2rem; display:flex; align-items:center; transition:transform 0.2s;"
+                  onmouseenter="this.style.transform='scale(1.1)'"
+                  onmouseleave="this.style.transform='scale(1)'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                </button>
+              </div>
+              @if (popular.descripcion) {
+                <p style="font-size:0.75rem; color:var(--texto-secondary); margin-top:0.25rem;">{{ popular.descripcion }}</p>
+              }
+              @if (preciosDePopular(popular).length > 0) {
+                <div style="display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.5rem;">
+                  @for (p of preciosDePopular(popular); track p.id) {
+                    <span style="background:linear-gradient(135deg,var(--neon-dark),var(--neon)); color:white; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:20px;">{{ p.label }} ${{ p.precio }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ARMAR PEDIDO -->
+  <section style="max-width:700px; margin:0 auto; padding:0 1rem;">
+    <h2 (animate.enter)="anim.slideLeft($event)"
+      style="font-family:'Cinzel',serif; font-size:1.2rem; color:var(--neon-light); margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem; opacity:0;">
+      🥤 Arma tu pedido
+    </h2>
+
+    <div (animate.enter)="anim.fadeUpDelayed($event)" style="margin-bottom:1.5rem; opacity:0;">
+      <label style="display:block; font-size:0.85rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">👤 Tu nombre</label>
+      <input type="text" placeholder="Ej: Ana García"
+        [value]="orderService.nombreCliente()" (input)="updateNombre($event)"
+        style="font-size:1rem; padding:0.65rem 1rem;" />
+    </div>
+
+    <div (animate.enter)="anim.fadeUpDelayed($event)" style="margin-bottom:1.5rem; opacity:0;">
+      <label style="display:block; font-size:0.85rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">📱 Tu número de WhatsApp</label>
+      <input type="tel" placeholder="Ej: 5551234567"
+        [value]="orderService.telefonoCliente()" (input)="updateTelefono($event)"
+        style="font-size:1rem; padding:0.65rem 1rem; width:100%; border-radius:12px; border:1px solid rgba(192,38,211,0.3); background:var(--bg-surface); color:var(--texto-primary);" />
+    </div>
+
+    @for (vaso of orderService.vasos(); track vaso.id; let i = $index) {
+      <div (animate.enter)="anim.slideRight($event)" style="margin-bottom:1rem; opacity:0;">
+        <app-vaso-card
+          [vaso]="vaso"
+          [index]="i"
+          [toppings]="fb.toppings()"
+          [cubiertas]="fb.cubiertas()"
+          [precios]="fb.precios()"
+          (vasoChange)="onVasoChange($event)"
+          (remove)="onRemoveVaso(vaso.id)"
+        />
+      </div>
+    }
+
+    <button (click)="orderService.addVaso()"
+      style="width:100%; padding:1rem; border:2px dashed rgba(192,38,211,0.5); border-radius:12px; background:transparent; color:var(--neon-light); font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.25s; margin-top:0.5rem; display:flex; align-items:center; justify-content:center; gap:0.5rem;"
+      onmouseenter="this.style.borderColor='rgba(192,38,211,0.9)'; this.style.background='rgba(192,38,211,0.07)'; this.style.transform='scale(1.01)'"
+      onmouseleave="this.style.borderColor='rgba(192,38,211,0.5)'; this.style.background='transparent'; this.style.transform='scale(1)'">
+      ＋ Agregar otro vaso
+    </button>
+  </section>
+
+  <!-- QR -->
+  <section style="max-width:700px; margin:3rem auto 0; padding:0 1rem; text-align:center;">
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.2); border-radius:14px; padding:2rem 1rem;">
+      <h3 style="font-family:'Cinzel',serif; font-size:1.1rem; color:var(--neon-light); margin-bottom:0.5rem;">📱 Escanea y ordena</h3>
+      <p style="font-size:0.85rem; color:var(--texto-secondary); margin-bottom:1.5rem; max-width:400px; margin-left:auto; margin-right:auto;">
+        ¿Estás en la computadora? Escanea este código con la cámara de tu celular para llevar el menú contigo.
+      </p>
+      <div style="background:white; padding:10px; border-radius:12px; display:inline-block; box-shadow:0 0 20px rgba(192,38,211,0.15);">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://fresaconcrema.netlify.app" alt="QR del Menú" style="width:140px; height:140px; display:block;" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto footer -->
+  @if (fb.contactInfo().direccion || fb.contactInfo().telefono || fb.contactInfo().horario || fb.contactInfo().dias) {
+    <footer style="max-width:700px; margin:3rem auto 0; padding:2rem 1rem 1rem; border-top:1px dashed rgba(192,38,211,0.3); text-align:center;">
+      <h3 style="font-family:'Cinzel',serif; font-size:1.1rem; color:var(--neon-light); margin-bottom:1rem;">🍓 Fresas con Crema ALO</h3>
+      <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:center; color:var(--texto-secondary); font-size:0.9rem;">
+        @if (fb.contactInfo().direccion) { <p style="display:flex; align-items:center; gap:0.4rem; max-width:80%; line-height:1.4;"><span>📍</span> {{ fb.contactInfo().direccion }}</p> }
+        @if (fb.contactInfo().telefono) { <p style="display:flex; align-items:center; gap:0.4rem;"><span>📞</span> {{ fb.contactInfo().telefono }}</p> }
+        @if (fb.contactInfo().horario)  { <p style="display:flex; align-items:center; gap:0.4rem;"><span>⏰</span> {{ fb.contactInfo().horario }}</p> }
+        @if (fb.contactInfo().dias)     { <p style="display:flex; align-items:center; gap:0.4rem;"><span>📅</span> {{ fb.contactInfo().dias }}</p> }
+      </div>
+    </footer>
+  }
+
+  <!-- FOOTER STICKY -->
+  <div (animate.enter)="anim.footerSlideUp($event)"
+    style="position:fixed; bottom:0; left:0; right:0; background:rgba(17,17,24,0.95); backdrop-filter:blur(12px); border-top:1px solid rgba(192,38,211,0.4); padding:0.85rem 1.5rem; display:flex; align-items:center; justify-content:space-between; z-index:50; gap:1rem; opacity:0;">
+    <div>
+      <p style="font-size:0.8rem; color:var(--texto-secondary);">{{ orderService.totalVasos() }} vasos</p>
+      <p style="font-size:1.2rem; font-weight:800; color:var(--texto-primary); font-family:'Cinzel',serif;">${{ orderService.totalPrecio() }}</p>
+    </div>
+    <button (click)="sendOrder()" [disabled]="!orderService.hasVasos() || isSending"
+      style="display:flex; align-items:center; gap:0.5rem; background:#25d366; color:white; border:none; padding:0.7rem 1.4rem; border-radius:30px; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.25s; box-shadow:0 4px 20px rgba(37,211,102,0.3);"
+      [style.opacity]="orderService.hasVasos() && !isSending ? '1' : '0.4'"
+      [style.cursor]="orderService.hasVasos() ? 'pointer' : 'not-allowed'"
+      onmouseenter="if(!this.disabled){ this.style.transform='scale(1.04)'; this.style.boxShadow='0 6px 28px rgba(37,211,102,0.45)'; }"
+      onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(37,211,102,0.3)';">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.851L.057 23.5l5.797-1.518A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.65-.49-5.183-1.348l-.371-.22-3.44.901.919-3.352-.242-.385A9.942 9.942 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+      </svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+
+</div>

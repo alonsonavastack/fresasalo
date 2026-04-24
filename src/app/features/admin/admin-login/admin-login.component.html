@@ -1,0 +1,86 @@
+<div style="
+  min-height: 100vh;
+  background: #0d0d12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+">
+  <!-- Glow de fondo -->
+  <div style="
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(192,38,211,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  "></div>
+
+  <!-- Card login -->
+  <div style="
+    background: var(--bg-card);
+    border: 1px solid rgba(192,38,211,0.3);
+    border-radius: 18px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 380px;
+    position: relative;
+    box-shadow: 0 0 40px rgba(192,38,211,0.12);
+  ">
+    <!-- Logo -->
+    <div style="text-align:center; margin-bottom:1.75rem;">
+      <img [src]="fb.logoUrl()" alt="ALO" style="width:90px; height:90px; object-fit:contain; margin:0 auto 1rem; display:block;" class="logo-img" />
+      <h1 style="font-family:'Cinzel',serif; font-size:1.5rem; color:var(--texto-primary);">Panel ALO</h1>
+      <p style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.25rem;">Administración · Fresas con Crema</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="submit()" style="display:flex; flex-direction:column; gap:1.1rem;">
+      <div>
+        <label style="display:block; font-size:0.8rem; color:var(--texto-secondary); margin-bottom:0.35rem; font-weight:600;">
+          Correo electrónico
+        </label>
+        <input type="email" formControlName="email" placeholder="admin@fresasalo.com" />
+      </div>
+
+      <div>
+        <label style="display:block; font-size:0.8rem; color:var(--texto-secondary); margin-bottom:0.35rem; font-weight:600;">
+          Contraseña
+        </label>
+        <input type="password" formControlName="password" placeholder="••••••••" />
+      </div>
+
+      @if (auth.error()) {
+        <p style="
+          background: rgba(139,26,26,0.25);
+          border: 1px solid rgba(192,57,57,0.4);
+          border-radius: 8px;
+          padding: 0.6rem 0.85rem;
+          font-size: 0.85rem;
+          color: var(--vino-suave);
+          text-align: center;
+        ">{{ auth.error() }}</p>
+      }
+
+      <button type="submit" [disabled]="form.invalid || loading()"
+        style="
+          margin-top: 0.5rem;
+          width: 100%;
+          padding: 0.8rem;
+          border-radius: 10px;
+          font-family: 'Nunito', sans-serif;
+          font-size: 1rem;
+          font-weight: 800;
+          letter-spacing: 0.03em;
+          transition: all 0.2s;
+        "
+        class="btn-neon"
+        [style.opacity]="(form.invalid || loading()) ? '0.5' : '1'"
+      >
+        {{ loading() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+  </div>
+</div>

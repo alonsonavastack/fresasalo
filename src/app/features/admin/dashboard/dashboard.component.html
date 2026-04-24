@@ -1,0 +1,155 @@
+<div>
+  <h1 style="font-family:'Cinzel',serif; font-size:1.5rem; color:var(--texto-primary); margin-bottom:0.25rem;">Dashboard</h1>
+  <p style="color:var(--texto-secondary); font-size:0.9rem; margin-bottom:2rem;">Resumen del catálogo · Fresas con Crema ALO</p>
+
+  <!-- LOGO DEL NEGOCIO -->
+  <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.3); border-radius:14px; padding:1.5rem; margin-bottom:2rem; max-width:700px;">
+    <h2 style="font-family:'Cinzel',serif; font-size:1rem; color:var(--neon-light); margin-bottom:1.25rem;">🖼️ Logo del negocio</h2>
+    <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+      <div style="flex-shrink:0;">
+        @if (logoUrl()) {
+          <img [src]="logoUrl()" alt="Logo actual" style="width:100px; height:100px; object-fit:contain; border-radius:12px; border:2px solid rgba(192,38,211,0.4); background:var(--bg-surface); padding:6px;" />
+        } @else {
+          <div style="width:100px; height:100px; border-radius:12px; border:2px dashed rgba(192,38,211,0.3); background:var(--bg-surface); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.25rem;">
+            <span style="font-size:1.8rem;">🍓</span>
+            <span style="font-size:0.65rem; color:var(--texto-muted); text-align:center;">Sin logo</span>
+          </div>
+        }
+      </div>
+      <div style="flex:1; min-width:220px;">
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+          <button type="button" (click)="logoMode.set('url')"
+            [style.background]="logoMode() === 'url' ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
+            [style.borderColor]="logoMode() === 'url' ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
+            style="border:1px solid; border-radius:7px; padding:0.3rem 0.8rem; color:var(--texto-primary); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:600;">
+            🔗 Pegar URL
+          </button>
+          <button type="button" (click)="logoMode.set('file')"
+            [style.background]="logoMode() === 'file' ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
+            [style.borderColor]="logoMode() === 'file' ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
+            style="border:1px solid; border-radius:7px; padding:0.3rem 0.8rem; color:var(--texto-primary); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:600;">
+            📁 Subir archivo
+          </button>
+        </div>
+        @if (logoMode() === 'url') {
+          <div style="display:flex; gap:0.5rem;">
+            <input type="text" [value]="logoUrlInput()" (input)="onLogoUrlInput($event)" placeholder="https://res.cloudinary.com/..." style="flex:1; font-size:0.85rem;" />
+            <button (click)="saveLogoUrl()" [disabled]="!logoUrlInput().trim()" class="btn-neon"
+              style="padding:0.5rem 1rem; border-radius:8px; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; white-space:nowrap;"
+              [style.opacity]="logoUrlInput().trim() ? '1' : '0.4'">Guardar</button>
+          </div>
+        } @else {
+          <div>
+            <input type="file" accept="image/*" (change)="onLogoFile($event)" style="font-size:0.85rem; padding:0.4rem 0.75rem; width:100%;" />
+            @if (uploadingLogo()) {
+              <p style="font-size:0.78rem; color:var(--neon-light); margin-top:0.4rem;">⏳ Subiendo imagen...</p>
+            }
+          </div>
+        }
+        <p style="font-size:0.75rem; color:var(--texto-muted); margin-top:0.6rem;">El logo se mostrará en la tienda y en el panel admin automáticamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; max-width:700px;">
+
+    <!-- Pedidos -->
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.4); border-radius:14px; padding:1.5rem; grid-column:span 2; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;"
+      onmouseenter="this.style.boxShadow='0 0 20px rgba(192,38,211,0.2)'"
+      onmouseleave="this.style.boxShadow='none'">
+      <div>
+        <div style="font-size:2rem; margin-bottom:0.4rem;">🍓</div>
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:var(--neon-light);">{{ totalPedidos() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Pedidos totales</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:#86efac;">{{ pedidosHoy() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Pedidos hoy</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:#facc15;">{{ pedidosPendientes() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">⏳ Pendientes</div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.25); border-radius:14px; padding:1.5rem;"
+      onmouseenter="this.style.borderColor='rgba(192,38,211,0.55)'; this.style.boxShadow='0 0 20px rgba(192,38,211,0.15)'"
+      onmouseleave="this.style.borderColor='rgba(192,38,211,0.25)'; this.style.boxShadow='none'">
+      <div style="font-size:2.2rem; margin-bottom:0.5rem;">✨</div>
+      <div style="font-family:'Cinzel',serif; font-size:2rem; font-weight:700; color:var(--neon-light);">{{ totalToppings() }}</div>
+      <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Toppings</div>
+      <div style="font-size:0.75rem; color:var(--texto-muted); margin-top:0.35rem;">{{ activeToppings() }} disponibles</div>
+    </div>
+
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.25); border-radius:14px; padding:1.5rem;"
+      onmouseenter="this.style.borderColor='rgba(192,38,211,0.55)'; this.style.boxShadow='0 0 20px rgba(192,38,211,0.15)'"
+      onmouseleave="this.style.borderColor='rgba(192,38,211,0.25)'; this.style.boxShadow='none'">
+      <div style="font-size:2.2rem; margin-bottom:0.5rem;">🍫</div>
+      <div style="font-family:'Cinzel',serif; font-size:2rem; font-weight:700; color:var(--neon-light);">{{ totalCubiertas() }}</div>
+      <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Cubiertas</div>
+      <div style="font-size:0.75rem; color:var(--texto-muted); margin-top:0.35rem;">en catálogo</div>
+    </div>
+
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.25); border-radius:14px; padding:1.5rem;"
+      onmouseenter="this.style.borderColor='rgba(192,38,211,0.55)'; this.style.boxShadow='0 0 20px rgba(192,38,211,0.15)'"
+      onmouseleave="this.style.borderColor='rgba(192,38,211,0.25)'; this.style.boxShadow='none'">
+      <div style="font-size:2.2rem; margin-bottom:0.5rem;">💰</div>
+      <div style="font-family:'Cinzel',serif; font-size:2rem; font-weight:700; color:var(--neon-light);">{{ totalPrecios() }}</div>
+      <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Tamaños / Precios</div>
+      <div style="font-size:0.75rem; color:var(--texto-muted); margin-top:0.35rem;">opciones activas</div>
+    </div>
+
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.25); border-radius:14px; padding:1.5rem;"
+      onmouseenter="this.style.borderColor='rgba(192,38,211,0.55)'; this.style.boxShadow='0 0 20px rgba(192,38,211,0.15)'"
+      onmouseleave="this.style.borderColor='rgba(192,38,211,0.25)'; this.style.boxShadow='none'">
+      <div style="font-size:2.2rem; margin-bottom:0.5rem;">⭐</div>
+      <div style="font-family:'Cinzel',serif; font-size:2rem; font-weight:700; color:var(--neon-light);">{{ totalPopulares() }}</div>
+      <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Más Pedidos</div>
+      <div style="font-size:0.75rem; color:var(--texto-muted); margin-top:0.35rem;">productos destacados</div>
+    </div>
+
+    <!-- Visitas -->
+    <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.25); border-radius:14px; padding:1.5rem; grid-column:span 2; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;"
+      onmouseenter="this.style.borderColor='rgba(192,38,211,0.55)'; this.style.boxShadow='0 0 20px rgba(192,38,211,0.15)'"
+      onmouseleave="this.style.borderColor='rgba(192,38,211,0.25)'; this.style.boxShadow='none'">
+      <div>
+        <div style="font-size:2rem; margin-bottom:0.4rem;">👀</div>
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:var(--neon-light);">{{ visitsTotal() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Visitas Totales</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:#86efac;">{{ visitsHoy() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Visitas hoy</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:#facc15;">{{ visitsSemana() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Esta semana</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Cinzel',serif; font-size:2.2rem; font-weight:700; color:#60a5fa;">{{ visitsMes() }}</div>
+        <div style="font-size:0.85rem; color:var(--texto-secondary); margin-top:0.2rem;">Últimos 30 días</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CÓDIGO QR -->
+  <div style="background:var(--bg-card); border:1px solid rgba(192,38,211,0.3); border-radius:14px; padding:1.5rem; margin-top:2rem; max-width:700px; display:flex; align-items:center; gap:2rem; flex-wrap:wrap;">
+    <div style="flex-shrink:0;">
+      <div style="background:white; padding:10px; border-radius:12px; display:inline-block;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://fresaconcrema.netlify.app" alt="QR Code" style="width:150px; height:150px; display:block;" />
+      </div>
+    </div>
+    <div style="flex:1; min-width:220px;">
+      <h2 style="font-family:'Cinzel',serif; font-size:1.2rem; color:var(--neon-light); margin-bottom:0.5rem;">📲 Tu Código QR</h2>
+      <p style="color:var(--texto-secondary); font-size:0.9rem; margin-bottom:1rem; line-height:1.5;">Este es el código QR de tu menú. Los clientes pueden escanearlo con la cámara de su celular para entrar directamente a hacer su pedido.</p>
+      
+      <button (click)="exportQR()" class="btn-neon"
+         style="display:inline-block; padding:0.6rem 1.2rem; border-radius:8px; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:700; color:white; background:linear-gradient(135deg,var(--neon-dark),var(--neon));">
+        ⬇️ Descargar QR (Exportar)
+      </button>
+      <p style="font-size:0.75rem; color:var(--texto-muted); margin-top:0.6rem;">Guarda la imagen en alta calidad para poder imprimirla.</p>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,167 @@
+<div style="display:flex; min-height:100vh; background:var(--bg-base);">
+
+  <!-- Overlay mobile -->
+  @if (menuOpen()) {
+    <div (click)="closeMenu()" style="
+      position:fixed; inset:0; background:rgba(0,0,0,0.6);
+      z-index:40; display:none;
+    " class="mobile-overlay"></div>
+  }
+
+  <!-- Sidebar -->
+  <aside [class.sidebar-open]="menuOpen()" style="
+    width: 220px;
+    min-height: 100vh;
+    background: #111118;
+    border-right: 1px solid rgba(192,38,211,0.2);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 50;
+  " class="sidebar">
+
+    <!-- Logo sidebar -->
+    <div style="padding:1.5rem 1rem 1rem; text-align:center; border-bottom:1px solid rgba(192,38,211,0.15);">
+      @if (fb.logoUrl()) {
+        <img [src]="fb.logoUrl()" alt="ALO"
+          style="width:60px; height:60px; object-fit:contain; display:block; margin:0 auto 0.5rem; border-radius:8px;" />
+      } @else {
+        <div style="width:60px; height:60px; display:flex; align-items:center; justify-content:center; margin:0 auto 0.5rem; font-size:2rem;">🍓</div>
+      }
+      <span style="font-family:'Cinzel',serif; font-size:0.9rem; color:var(--neon-light);">Panel ALO</span>
+    </div>
+
+    <!-- Nav links -->
+    <nav style="padding:1rem 0; flex:1; overflow-y:auto;">
+      @if (auth.userRole() === 'admin') {
+        <a routerLink="/admin/dashboard" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>📊</span> Dashboard
+        </a>
+        <a routerLink="/admin/finanzas" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>💼</span> Finanzas
+        </a>
+      }
+      <a routerLink="/admin/visitas" routerLinkActive="nav-active" (click)="closeMenu()"
+        style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+        class="nav-link">
+        <span>👀</span> Visitas
+      </a>
+      <a routerLink="/admin/pedidos" routerLinkActive="nav-active" (click)="closeMenu()"
+        style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s; position:relative;"
+        class="nav-link">
+        <span>📋</span> Pedidos
+        @if (pendingCount() > 0) {
+          <span style="background:#ef4444; color:white; font-size:0.65rem; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:auto;">{{ pendingCount() }}</span>
+        }
+      </a>
+      @if (auth.userRole() === 'admin') {
+        <a routerLink="/admin/clientes" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>👥</span> Clientes
+        </a>
+      }
+      <a routerLink="/admin/pos" routerLinkActive="nav-active" (click)="closeMenu()"
+        style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+        class="nav-link">
+        <span>🏪</span> Punto de Venta
+      </a>
+      @if (auth.userRole() === 'admin') {
+        <a routerLink="/admin/toppings" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>✨</span> Toppings
+        </a>
+        <a routerLink="/admin/cubiertas" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>🍫</span> Cubiertas
+        </a>
+        <a routerLink="/admin/precios" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>💰</span> Precios
+        </a>
+        <a routerLink="/admin/populares" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>⭐</span> Más Pedidos
+        </a>
+        <a routerLink="/admin/configuraciones" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>⚙️</span> Configuraciones
+        </a>
+        <a routerLink="/admin/imprimir-menu" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>🖨️</span> Imprimir Menú
+        </a>
+        <a routerLink="/admin/empleados" routerLinkActive="nav-active" (click)="closeMenu()"
+          style="display:flex; align-items:center; gap:0.6rem; padding:0.75rem 1.25rem; color:var(--texto-secondary); text-decoration:none; font-size:0.9rem; font-weight:600; transition:all 0.15s;"
+          class="nav-link">
+          <span>🧑‍💼</span> Empleados
+        </a>
+      }
+    </nav>
+
+    <!-- Logout -->
+    <div style="padding:1rem; border-top:1px solid rgba(192,38,211,0.15);">
+      <button (click)="logout()"
+        style="width:100%; padding:0.6rem; background:rgba(139,26,26,0.2); border:1px solid rgba(192,57,57,0.3); border-radius:8px; color:var(--vino-suave); font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s;"
+        onmouseenter="this.style.background='rgba(139,26,26,0.4)'"
+        onmouseleave="this.style.background='rgba(139,26,26,0.2)'"
+      >🚪 Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+    <header style="display:none; align-items:center; gap:1rem; padding:0.75rem 1rem; background:#111118; border-bottom:1px solid rgba(192,38,211,0.2); position:sticky; top:0; z-index:30;" class="mobile-header">
+      <button (click)="toggleMenu()"
+        style="background:none; border:none; color:var(--texto-primary); font-size:1.4rem; cursor:pointer; padding:0.25rem;">
+        ☰
+      </button>
+      <span style="font-family:'Cinzel',serif; font-size:1rem; color:var(--neon-light);">Panel ALO</span>
+    </header>
+    <main style="padding:1.5rem; flex:1;">
+      <router-outlet />
+    </main>
+  </div>
+
+</div>
+
+<style>
+  .nav-link:hover {
+    color: var(--texto-primary) !important;
+    background: rgba(192,38,211,0.08);
+  }
+  .nav-active {
+    color: var(--neon-light) !important;
+    border-left: 3px solid var(--neon);
+    background: rgba(192,38,211,0.1);
+    padding-left: calc(1.25rem - 3px) !important;
+  }
+  @media screen and (max-width: 767px) {
+    .sidebar {
+      position: fixed !important;
+      top: 0; left: 0; bottom: 0;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+    }
+    .sidebar-open {
+      transform: translateX(0) !important;
+    }
+    .mobile-header {
+      display: flex !important;
+    }
+    .mobile-overlay {
+      display: block !important;
+    }
+  }
+</style>
