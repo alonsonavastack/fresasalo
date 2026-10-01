@@ -41,6 +41,7 @@ export class WhatsappService {
     return msg;
   }
 
+<<<<<<< HEAD
   send(nombreCliente: string, telefonoCliente: string, vasos: VasoPedido[]): void {
     const mensaje = this.buildMessage(nombreCliente, telefonoCliente, vasos);
     const encoded = encodeURIComponent(mensaje);
@@ -56,5 +57,19 @@ export class WhatsappService {
     } else {
       window.open(url, '_blank');
     }
+=======
+  async send(nombreCliente: string, telefonoCliente: string, vasos: VasoPedido[]): Promise<void> {
+    const mensaje     = this.buildMessage(nombreCliente, telefonoCliente, vasos);
+    const totalVasos  = vasos.reduce((sum, v) => sum + v.cantidad, 0);
+    const totalPrecio = vasos.reduce((sum, v) => sum + v.precio * v.cantidad, 0);
+    const encoded     = encodeURIComponent(mensaje);
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const url = isMobile
+      ? `whatsapp://send?phone=${this.phone}&text=${encoded}`
+      : `https://wa.me/${this.phone}?text=${encoded}`;
+
+    window.open(url, '_blank');
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   }
 }

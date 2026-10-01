@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+=======
+import { Component, inject, signal, computed } from '@angular/core';
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FirebaseService } from '../../../../core/services/firebase.service';
 import { StorageService } from '../../../../core/services/storage.service';
@@ -8,6 +12,7 @@ import { ProductoPopular, PrecioVaso } from '../../../../core/models/product.mod
   selector: 'app-populares-crud',
   standalone: true,
   imports: [ReactiveFormsModule],
+<<<<<<< HEAD
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './populares-crud.component.html',
 })
@@ -22,6 +27,21 @@ export class PopularesCrudComponent {
   uploading = signal(false);
   saving = signal(false);
   uploadMode = signal<'url' | 'file'>('url');
+=======
+  templateUrl: './populares-crud.component.html'
+})
+export class PopularesCrudComponent {
+  private fb      = inject(FirebaseService);
+  private storage = inject(StorageService);
+
+  items           = this.fb.allPopulares;
+  allPrecios      = this.fb.allPrecios;
+  modalOpen       = signal(false);
+  editingItem     = signal<ProductoPopular | null>(null);
+  uploading       = signal(false);
+  saving          = signal(false);
+  uploadMode      = signal<'url' | 'file'>('url');
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 
   // IDs de precios seleccionados en el modal (manejado aparte del FormGroup)
   selectedPreciosIds = signal<string[]>([]);
@@ -31,6 +51,7 @@ export class PopularesCrudComponent {
     const ids = item.preciosIds ?? [];
     if (ids.length === 0) return '—';
     const precios = this.allPrecios()
+<<<<<<< HEAD
       .filter((p) => ids.includes(p.id))
       .sort((a, b) => a.precio - b.precio);
     return precios.map((p) => `${p.label} $${p.precio}`).join(' · ');
@@ -42,6 +63,19 @@ export class PopularesCrudComponent {
     imageUrl: new FormControl(''),
     visible: new FormControl(true),
     orden: new FormControl(1),
+=======
+      .filter(p => ids.includes(p.id))
+      .sort((a, b) => a.precio - b.precio);
+    return precios.map(p => `${p.label} $${p.precio}`).join(' · ');
+  }
+
+  form = new FormGroup({
+    nombre:      new FormControl('', Validators.required),
+    descripcion: new FormControl(''),
+    imageUrl:    new FormControl(''),
+    visible:     new FormControl(true),
+    orden:       new FormControl(1)
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   });
 
   openCreate(): void {
@@ -60,14 +94,22 @@ export class PopularesCrudComponent {
     this.modalOpen.set(true);
   }
 
+<<<<<<< HEAD
   closeModal(): void {
     this.modalOpen.set(false);
   }
+=======
+  closeModal(): void { this.modalOpen.set(false); }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 
   togglePrecio(id: string): void {
     const current = this.selectedPreciosIds();
     if (current.includes(id)) {
+<<<<<<< HEAD
       this.selectedPreciosIds.set(current.filter((p) => p !== id));
+=======
+      this.selectedPreciosIds.set(current.filter(p => p !== id));
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     } else {
       this.selectedPreciosIds.set([...current, id]);
     }
@@ -84,9 +126,13 @@ export class PopularesCrudComponent {
     try {
       const url = await this.storage.uploadImage(file, 'populares');
       this.form.patchValue({ imageUrl: url });
+<<<<<<< HEAD
     } finally {
       this.uploading.set(false);
     }
+=======
+    } finally { this.uploading.set(false); }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   }
 
   async save(): Promise<void> {
@@ -100,9 +146,13 @@ export class PopularesCrudComponent {
         await this.fb.add('populares', data);
       }
       this.closeModal();
+<<<<<<< HEAD
     } finally {
       this.saving.set(false);
     }
+=======
+    } finally { this.saving.set(false); }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   }
 
   async delete(item: ProductoPopular): Promise<void> {

@@ -6,6 +6,7 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
+<<<<<<< HEAD
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts"],
   "angularCompilerOptions": {
@@ -16,4 +17,12 @@
       }
     }
   }
+=======
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 }

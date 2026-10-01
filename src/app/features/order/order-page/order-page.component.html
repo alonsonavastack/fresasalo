@@ -106,6 +106,7 @@
     </h2>
 
     <div (animate.enter)="anim.fadeUpDelayed($event)" style="margin-bottom:1.5rem; opacity:0;">
+<<<<<<< HEAD
       <label style="display:block; font-size:0.85rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">👤 Tu nombre <span style="color:#ff6b9d;">*</span></label>
       <input type="text" placeholder="Ej: Ana García"
         [value]="orderService.nombreCliente()" (input)="updateNombre($event)" (blur)="onNombreBlur()"
@@ -127,6 +128,19 @@
       } @else {
         <p style="color:var(--texto-muted); font-size:0.75rem; margin-top:0.35rem;">Lo usamos para registrar tu pedido y contactarte por WhatsApp.</p>
       }
+=======
+      <label style="display:block; font-size:0.85rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">👤 Tu nombre</label>
+      <input type="text" placeholder="Ej: Ana García"
+        [value]="orderService.nombreCliente()" (input)="updateNombre($event)"
+        style="font-size:1rem; padding:0.65rem 1rem;" />
+    </div>
+
+    <div (animate.enter)="anim.fadeUpDelayed($event)" style="margin-bottom:1.5rem; opacity:0;">
+      <label style="display:block; font-size:0.85rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">📱 Tu número de WhatsApp</label>
+      <input type="tel" placeholder="Ej: 5551234567"
+        [value]="orderService.telefonoCliente()" (input)="updateTelefono($event)"
+        style="font-size:1rem; padding:0.65rem 1rem; width:100%; border-radius:12px; border:1px solid rgba(192,38,211,0.3); background:var(--bg-surface); color:var(--texto-primary);" />
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     </div>
 
     @for (vaso of orderService.vasos(); track vaso.id; let i = $index) {
@@ -177,6 +191,7 @@
     </footer>
   }
 
+<<<<<<< HEAD
   <!-- Aviso de guardado fallido -->
   @if (saveWarning()) {
     <div style="position:fixed; bottom:90px; left:50%; transform:translateX(-50%); z-index:60; max-width:90vw; width:420px; background:#2a0a0a; border:1px solid #ff6b9d; border-radius:12px; padding:0.85rem 1rem; box-shadow:0 8px 30px rgba(0,0,0,0.5); display:flex; align-items:flex-start; gap:0.6rem;">
@@ -186,6 +201,8 @@
     </div>
   }
 
+=======
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   <!-- FOOTER STICKY -->
   <div (animate.enter)="anim.footerSlideUp($event)"
     style="position:fixed; bottom:0; left:0; right:0; background:rgba(17,17,24,0.95); backdrop-filter:blur(12px); border-top:1px solid rgba(192,38,211,0.4); padding:0.85rem 1.5rem; display:flex; align-items:center; justify-content:space-between; z-index:50; gap:1rem; opacity:0;">
@@ -193,10 +210,17 @@
       <p style="font-size:0.8rem; color:var(--texto-secondary);">{{ orderService.totalVasos() }} vasos</p>
       <p style="font-size:1.2rem; font-weight:800; color:var(--texto-primary); font-family:'Cinzel',serif;">${{ orderService.totalPrecio() }}</p>
     </div>
+<<<<<<< HEAD
     <button (click)="sendOrder()" [disabled]="orderService.vasos().length === 0 || isSending"
       style="display:flex; align-items:center; gap:0.5rem; background:#25d366; color:white; border:none; padding:0.7rem 1.4rem; border-radius:30px; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.25s; box-shadow:0 4px 20px rgba(37,211,102,0.3);"
       [style.opacity]="orderService.vasos().length > 0 && !isSending ? '1' : '0.4'"
       [style.cursor]="orderService.vasos().length > 0 ? 'pointer' : 'not-allowed'"
+=======
+    <button (click)="sendOrder()" [disabled]="!orderService.hasVasos() || isSending"
+      style="display:flex; align-items:center; gap:0.5rem; background:#25d366; color:white; border:none; padding:0.7rem 1.4rem; border-radius:30px; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.25s; box-shadow:0 4px 20px rgba(37,211,102,0.3);"
+      [style.opacity]="orderService.hasVasos() && !isSending ? '1' : '0.4'"
+      [style.cursor]="orderService.hasVasos() ? 'pointer' : 'not-allowed'"
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       onmouseenter="if(!this.disabled){ this.style.transform='scale(1.04)'; this.style.boxShadow='0 6px 28px rgba(37,211,102,0.45)'; }"
       onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(37,211,102,0.3)';">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="white">

@@ -1,15 +1,25 @@
+<<<<<<< HEAD
 import { Component, HostListener, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+=======
+import { Component, HostListener, OnInit, signal } from '@angular/core';
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-pwa-prompt',
   standalone: true,
   imports: [CommonModule],
+<<<<<<< HEAD
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (showPrompt()) {
       <div
         style="
+=======
+  template: `
+    @if (showPrompt()) {
+      <div style="
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
         position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
         width:calc(100% - 40px); max-width:400px;
         background:rgba(26,10,31,0.95);
@@ -21,6 +31,7 @@ import { CommonModule } from '@angular/common';
         z-index:9999;
         display:flex; flex-direction:column; gap:0.8rem;
         animation:slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+<<<<<<< HEAD
       "
       >
         <style>
@@ -65,22 +76,52 @@ import { CommonModule } from '@angular/common';
         <button
           (click)="install()"
           style="
+=======
+      ">
+        <style>
+          @keyframes slideUp {
+            from { opacity:0; transform:translate(-50%, 40px); }
+            to { opacity:1; transform:translate(-50%, 0); }
+          }
+        </style>
+        
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div style="display:flex; gap:0.8rem; align-items:center;">
+            <img src="/fresasconcrema.png" alt="App Icon" style="width:40px; height:40px; border-radius:10px; object-fit:cover;" />
+            <div>
+              <h4 style="margin:0; font-family:'Cinzel',serif; color:var(--neon-light); font-size:1rem;">Instala Fresas ALO</h4>
+              <p style="margin:0; font-size:0.8rem; color:var(--texto-secondary);">Accede más rápido desde tu pantalla de inicio.</p>
+            </div>
+          </div>
+          <button (click)="close()" style="background:none; border:none; color:var(--texto-secondary); font-size:1.2rem; cursor:pointer; padding:0 0.2rem;">&times;</button>
+        </div>
+
+        <button (click)="install()" style="
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
           width:100%; padding:0.7rem;
           background:linear-gradient(135deg,var(--neon-dark),var(--neon));
           color:white; border:none; border-radius:10px;
           font-family:'Nunito',sans-serif; font-weight:700; font-size:0.95rem;
           cursor:pointer; transition:transform 0.2s;
+<<<<<<< HEAD
         "
           onactive="this.style.transform='scale(0.98)'"
         >
+=======
+        " onactive="this.style.transform='scale(0.98)'">
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
           Instalar Aplicación
         </button>
       </div>
     }
 
     @if (installedSuccess()) {
+<<<<<<< HEAD
       <div
         style="
+=======
+      <div style="
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
         position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
         background:#4ade80; color:#064e3b;
         padding:0.8rem 1.5rem; border-radius:30px;
@@ -89,12 +130,20 @@ import { CommonModule } from '@angular/common';
         z-index:10000; display:flex; align-items:center; gap:0.5rem;
         animation:slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         white-space:nowrap;
+<<<<<<< HEAD
       "
       >
         <span>✅</span> ¡Aplicación instalada con éxito!
       </div>
     }
   `,
+=======
+      ">
+        <span>✅</span> ¡Aplicación instalada con éxito!
+      </div>
+    }
+  `
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 })
 export class PwaPromptComponent implements OnInit {
   showPrompt = signal(false);
@@ -103,10 +152,14 @@ export class PwaPromptComponent implements OnInit {
 
   ngOnInit() {
     // Si ya estamos en modo standalone (ya instalada), no mostrar nunca
+<<<<<<< HEAD
     if (
       window.matchMedia('(display-mode: standalone)').matches ||
       (window.navigator as any).standalone === true
     ) {
+=======
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true) {
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       return;
     }
   }

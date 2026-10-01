@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+=======
+import { Component, inject, signal, computed } from '@angular/core';
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FirebaseService } from '../../../core/services/firebase.service';
@@ -10,6 +14,7 @@ import { VasoPedido, Topping, Cubierta, PrecioVaso } from '../../../core/models/
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pos.component.html',
+<<<<<<< HEAD
   changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
@@ -25,11 +30,21 @@ export class PosComponent {
   sync = inject(OfflineSyncService);
 
   precios = this.firebaseService.precios;
+=======
+  styles: [`:host { display: block; height: 100%; }`]
+})
+export class PosComponent {
+  firebaseService = inject(FirebaseService);
+  sync            = inject(OfflineSyncService);
+
+  precios  = this.firebaseService.precios;
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   toppings = this.firebaseService.toppings;
   cubiertas = this.firebaseService.cubiertas;
 
   preciosOrdenados = computed(() => [...this.precios()].sort((a, b) => a.precio - b.precio));
 
+<<<<<<< HEAD
   cart = signal<VasoPedido[]>([]);
   cartTotal = computed(() => this.cart().reduce((acc, v) => acc + v.precio * v.cantidad, 0));
   cartTotalItems = computed(() => this.cart().reduce((acc, v) => acc + v.cantidad, 0));
@@ -54,6 +69,30 @@ export class PosComponent {
     const idx = current.findIndex((x) => x.id === t.id);
     if (idx > -1) {
       this.selectedToppings.set(current.filter((x) => x.id !== t.id));
+=======
+  cart           = signal<VasoPedido[]>([]);
+  cartTotal      = computed(() => this.cart().reduce((acc, v) => acc + v.precio * v.cantidad, 0));
+  cartTotalItems = computed(() => this.cart().reduce((acc, v) => acc + v.cantidad, 0));
+
+  selectedPrecio   = signal<PrecioVaso | null>(null);
+  selectedToppings = signal<Topping[]>([]);
+  selectedCubierta = signal<Cubierta | null>(null);
+  combinado        = signal<boolean>(false);
+  cantidad         = signal<number>(1);
+  notas            = signal<string>('');
+
+  isSaving       = signal<boolean>(false);
+  successMessage = signal<string>('');
+  errorMessage   = signal<string>('');
+
+  selectPrecio(p: PrecioVaso) { this.selectedPrecio.set(p); }
+
+  toggleTopping(t: Topping) {
+    const current = this.selectedToppings();
+    const idx = current.findIndex(x => x.id === t.id);
+    if (idx > -1) {
+      this.selectedToppings.set(current.filter(x => x.id !== t.id));
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     } else {
       const max = this.combinado() ? 2 : 1;
       if (current.length >= max) {
@@ -72,9 +111,13 @@ export class PosComponent {
     this.combinado.set(!this.combinado());
   }
 
+<<<<<<< HEAD
   selectCubierta(c: Cubierta | null) {
     this.selectedCubierta.set(c);
   }
+=======
+  selectCubierta(c: Cubierta | null) { this.selectedCubierta.set(c); }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 
   showError(msg: string) {
     this.errorMessage.set(msg);
@@ -85,6 +128,7 @@ export class PosComponent {
     const p = this.selectedPrecio();
     if (!p) return;
     const ts = this.selectedToppings();
+<<<<<<< HEAD
     const c = this.selectedCubierta();
 
     const vaso: VasoPedido = {
@@ -101,6 +145,24 @@ export class PosComponent {
     };
 
     this.cart.update((curr) => [...curr, vaso]);
+=======
+    const c  = this.selectedCubierta();
+
+    const vaso: VasoPedido = {
+      id:           crypto.randomUUID(),
+      precio:       p.precio,
+      precioLabel:  p.label,
+      toppings:     ts.map(x => x.id),
+      toppingNames: ts.length > 0 ? ts.map(x => x.name) : [],
+      cubierta:     c?.id   || '',
+      cubiertaName: c?.name || 'Sin cubierta',
+      combinado:    this.combinado(),
+      cantidad:     this.cantidad(),
+      notas:        this.notas()
+    };
+
+    this.cart.update(curr => [...curr, vaso]);
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     this.selectedPrecio.set(null);
     this.selectedToppings.set([]);
     this.selectedCubierta.set(null);
@@ -110,7 +172,11 @@ export class PosComponent {
   }
 
   removeFromCart(index: number) {
+<<<<<<< HEAD
     this.cart.update((curr) => curr.filter((_, i) => i !== index));
+=======
+    this.cart.update(curr => curr.filter((_, i) => i !== index));
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   }
 
   async checkout() {
@@ -119,6 +185,7 @@ export class PosComponent {
 
     try {
       const result = await this.sync.checkout({
+<<<<<<< HEAD
         nombreCliente: 'Venta Mostrador',
         telefonoCliente: 'N/A',
         vasos: this.cart(),
@@ -127,6 +194,16 @@ export class PosComponent {
         timestamp: new Date(),
         mensaje: 'Venta registrada desde Punto de Venta',
         status: 'entregado',
+=======
+        nombreCliente:   'Venta Mostrador',
+        telefonoCliente: 'N/A',
+        vasos:           this.cart(),
+        totalVasos:      this.cartTotalItems(),
+        totalPrecio:     this.cartTotal(),
+        timestamp:       new Date(),
+        mensaje:         'Venta registrada desde Punto de Venta',
+        status:          'entregado'
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       });
 
       this.cart.set([]);
@@ -137,6 +214,10 @@ export class PosComponent {
         this.successMessage.set('💾 Guardada sin internet — se sincronizará al reconectarse');
       }
       setTimeout(() => this.successMessage.set(''), 4000);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     } catch (e) {
       console.error('Error en checkout:', e);
       this.showError('Error al registrar la venta');

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
+=======
+import { Component, inject, computed } from '@angular/core';
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 import { DatePipe } from '@angular/common';
 import { FirebaseService } from '../../../core/services/firebase.service';
 
@@ -17,18 +21,29 @@ export interface ClienteAgrupado {
   standalone: true,
   imports: [],
   providers: [DatePipe],
+<<<<<<< HEAD
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './clientes.component.html',
 })
 export class ClientesComponent {
   private fb = inject(FirebaseService);
+=======
+  templateUrl: './clientes.component.html',
+})
+export class ClientesComponent {
+  private fb       = inject(FirebaseService);
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   private datePipe = inject(DatePipe);
 
   clientes = computed<ClienteAgrupado[]>(() => {
     const pedidos = this.fb.allPedidos();
     const map = new Map<string, ClienteAgrupado>();
 
+<<<<<<< HEAD
     pedidos.forEach((p) => {
+=======
+    pedidos.forEach(p => {
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       if (!p.telefonoCliente || p.telefonoCliente === 'N/A') return;
       if (p.status === 'cancelado') return;
 
@@ -41,7 +56,11 @@ export class ClientesComponent {
           totalPedidos: 0,
           totalGastado: 0,
           ultimoPedido: p.timestamp,
+<<<<<<< HEAD
           favoritosStr: '',
+=======
+          favoritosStr: ''
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
         });
       }
 
@@ -59,6 +78,7 @@ export class ClientesComponent {
       }
     });
 
+<<<<<<< HEAD
     map.forEach((c) => {
       const tallyToppings: Record<string, number> = {};
       const tallyCubiertas: Record<string, number> = {};
@@ -73,12 +93,29 @@ export class ClientesComponent {
             tallyCubiertas[v.cubiertaName] = (tallyCubiertas[v.cubiertaName] || 0) + v.cantidad;
           }
           v.toppingNames.forEach((t) => {
+=======
+    map.forEach(c => {
+      const tallyToppings: Record<string, number>  = {};
+      const tallyCubiertas: Record<string, number> = {};
+
+      const susPedidos = pedidos.filter(
+        p => p.telefonoCliente?.trim() === c.telefono && p.status !== 'cancelado'
+      );
+
+      susPedidos.forEach(p => {
+        p.vasos.forEach(v => {
+          if (v.cubiertaName) {
+            tallyCubiertas[v.cubiertaName] = (tallyCubiertas[v.cubiertaName] || 0) + v.cantidad;
+          }
+          v.toppingNames.forEach(t => {
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
             tallyToppings[t] = (tallyToppings[t] || 0) + v.cantidad;
           });
         });
       });
 
       const topCubierta = Object.entries(tallyCubiertas).sort((a, b) => b[1] - a[1])[0];
+<<<<<<< HEAD
       const topToppings = Object.entries(tallyToppings)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 2);
@@ -87,6 +124,13 @@ export class ClientesComponent {
       if (topCubierta) fav += `🍫 ${topCubierta[0]}`;
       if (topToppings.length > 0)
         fav += (fav ? '  ✨ ' : '✨ ') + topToppings.map((t) => t[0]).join(', ');
+=======
+      const topToppings = Object.entries(tallyToppings).sort((a, b) => b[1] - a[1]).slice(0, 2);
+
+      let fav = '';
+      if (topCubierta) fav += `🍫 ${topCubierta[0]}`;
+      if (topToppings.length > 0) fav += (fav ? '  ✨ ' : '✨ ') + topToppings.map(t => t[0]).join(', ');
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       c.favoritosStr = fav || 'Sin favoritos claros';
     });
 

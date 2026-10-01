@@ -73,10 +73,14 @@
               [style.boxShadow]="selectedCubierta() === c.id ? '0 0 12px rgba(192,38,211,0.4)' : 'none'"
               style="border:1px solid; border-radius:8px; padding:0.4rem 0.85rem; color:var(--texto-primary); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:0.35rem;">
               @if (c.imageUrl) {
+<<<<<<< HEAD
                 <img [src]="c.imageUrl" [alt]="c.name" style="width:18px; height:18px; object-fit:cover; border-radius:4px;" />
                 <span (click)="openPreview(c.imageUrl, c.name, $event)"
                   style="display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:zoom-in; opacity:0.8;"
                   title="Ver imagen">🔍</span>
+=======
+                <img [src]="c.imageUrl" style="width:18px; height:18px; object-fit:cover; border-radius:4px;" />
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
               }
               {{ c.name }}
             </button>
@@ -111,7 +115,11 @@
         <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
           @for (t of toppings(); track t.id) {
             <button (click)="toggleTopping(t.id)"
+<<<<<<< HEAD
               [attr.aria-disabled]="isToppingDisabled(t.id) ? 'true' : null"
+=======
+              [disabled]="isToppingDisabled(t.id)"
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
               [style.background]="isToppingSelected(t.id) ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
               [style.borderColor]="isToppingSelected(t.id) ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
               [style.boxShadow]="isToppingSelected(t.id) ? '0 0 12px rgba(192,38,211,0.4)' : 'none'"
@@ -119,10 +127,14 @@
               [style.cursor]="isToppingDisabled(t.id) ? 'not-allowed' : 'pointer'"
               style="border:1px solid; border-radius:8px; padding:0.4rem 0.85rem; color:var(--texto-primary); font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:0.35rem;">
               @if (t.imageUrl) {
+<<<<<<< HEAD
                 <img [src]="t.imageUrl" [alt]="t.name" style="width:18px; height:18px; object-fit:cover; border-radius:4px;" />
                 <span (click)="openPreview(t.imageUrl, t.name, $event)"
                   style="display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:zoom-in; opacity:0.8;"
                   title="Ver imagen">🔍</span>
+=======
+                <img [src]="t.imageUrl" style="width:18px; height:18px; object-fit:cover; border-radius:4px;" />
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
               }
               {{ t.name }}
             </button>
@@ -153,6 +165,7 @@
     </div>
 
   </div>
+<<<<<<< HEAD
 
   <!-- Lightbox: vista ampliada de imagen -->
   @if (previewImage(); as preview) {
@@ -170,4 +183,6 @@
       </div>
     </div>
   }
+=======
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 </div>

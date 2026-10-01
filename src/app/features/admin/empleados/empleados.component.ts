@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+=======
+import { Component, inject, signal, computed } from '@angular/core';
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { FirebaseCoreService } from '../../../core/services/firebase-core.service';
@@ -9,8 +13,12 @@ import { Role, Usuario } from '../../../core/models/product.model';
   selector: 'app-empleados',
   standalone: true,
   imports: [ReactiveFormsModule],
+<<<<<<< HEAD
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './empleados.component.html',
+=======
+  templateUrl: './empleados.component.html'
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 })
 export class EmpleadosComponent {
   auth = inject(AuthService);
@@ -27,7 +35,11 @@ export class EmpleadosComponent {
   form: FormGroup = this.fbBuilder.group({
     nombre: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
+<<<<<<< HEAD
     password: ['', [Validators.required, Validators.minLength(6)]],
+=======
+    password: ['', [Validators.required, Validators.minLength(6)]]
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   });
 
   constructor() {
@@ -42,13 +54,21 @@ export class EmpleadosComponent {
       const list: Usuario[] = [];
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
+<<<<<<< HEAD
         if (data['role'] !== 'admin') {
           // No mostrar otros admins
+=======
+        if (data['role'] !== 'admin') { // No mostrar otros admins
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
           list.push({
             id: docSnap.id,
             nombre: data['nombre'],
             email: data['email'],
+<<<<<<< HEAD
             role: data['role'] as Role,
+=======
+            role: data['role'] as Role
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
           });
         }
       });
@@ -94,12 +114,16 @@ export class EmpleadosComponent {
   }
 
   async toggleActivo(empleado: Usuario) {
+<<<<<<< HEAD
     if (
       !confirm(
         `¿Estás seguro de que deseas ${empleado.role === 'inactivo' ? 'activar' : 'desactivar'} a ${empleado.nombre}?`,
       )
     )
       return;
+=======
+    if (!confirm(`¿Estás seguro de que deseas ${empleado.role === 'inactivo' ? 'activar' : 'desactivar'} a ${empleado.nombre}?`)) return;
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 
     const nuevoRol = empleado.role === 'inactivo' ? 'empleado' : 'inactivo';
     try {
@@ -107,9 +131,13 @@ export class EmpleadosComponent {
       await updateDoc(docRef, { role: nuevoRol });
 
       // Actualizar localmente
+<<<<<<< HEAD
       this.empleados.update((list) =>
         list.map((e) => (e.id === empleado.id ? { ...e, role: nuevoRol } : e)),
       );
+=======
+      this.empleados.update(list => list.map(e => e.id === empleado.id ? { ...e, role: nuevoRol } : e));
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     } catch (e) {
       console.error('Error actualizando rol:', e);
       alert('Error al actualizar el estado del empleado.');

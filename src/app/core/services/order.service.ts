@@ -15,6 +15,7 @@ export class OrderService {
     this.vasos().reduce((sum, v) => sum + v.precio * v.cantidad, 0)
   );
 
+<<<<<<< HEAD
   // Requiere al menos 10 dígitos (número mexicano sin lada de país).
   // Se limpia cualquier espacio, guión o paréntesis antes de contar.
   telefonoValido = computed(() =>
@@ -26,6 +27,12 @@ export class OrderService {
     this.vasos().every(v => v.precio > 0) &&
     this.nombreCliente().trim().length > 0 &&
     this.telefonoValido()
+=======
+  hasVasos = computed(() =>
+    this.vasos().length > 0 &&
+    this.vasos().every(v => v.precio > 0) &&
+    this.nombreCliente().trim().length > 0
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   );
 
   addVaso(): void {

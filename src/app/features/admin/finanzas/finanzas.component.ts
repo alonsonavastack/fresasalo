@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+=======
+import { Component, inject, signal, computed } from '@angular/core';
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FirebaseService } from '../../../core/services/firebase.service';
@@ -10,12 +14,17 @@ type FilterPeriod = 'hoy' | 'semana' | 'mes' | 'todo' | 'personalizado';
   selector: 'app-finanzas',
   standalone: true,
   imports: [FormsModule, DatePipe, DecimalPipe],
+<<<<<<< HEAD
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './finanzas.component.html',
+=======
+  templateUrl: './finanzas.component.html'
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 })
 export class FinanzasComponent {
   firebase = inject(FirebaseService);
 
+<<<<<<< HEAD
   period = signal<FilterPeriod>('hoy');
   fechaInicio = signal<string>('');
   fechaFin = signal<string>('');
@@ -41,28 +50,63 @@ export class FinanzasComponent {
   private isDateInPeriod(date: Date): boolean {
     const now = new Date();
     const d = new Date(date);
+=======
+  period      = signal<FilterPeriod>('hoy');
+  fechaInicio = signal<string>('');
+  fechaFin    = signal<string>('');
+
+  showGastoModal = signal<boolean>(false);
+  isSaving       = signal<boolean>(false);
+
+  // Campos del formulario de gasto como signals individuales
+  gastoMonto     = signal<number | null>(null);
+  gastoConcepto  = signal<string>('');
+  gastoCategoria = signal<CategoriaGasto>('Insumos');
+  gastoNotas     = signal<string>('');
+
+  categorias: CategoriaGasto[] = ['Insumos', 'Empaques', 'Servicios', 'Sueldos', 'Otros'];
+
+  onFechaInicio(e: Event) { this.fechaInicio.set((e.target as HTMLInputElement).value); }
+  onFechaFin(e: Event)    { this.fechaFin.set((e.target as HTMLInputElement).value); }
+
+  private isDateInPeriod(date: Date): boolean {
+    const now    = new Date();
+    const d      = new Date(date);
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     const period = this.period();
 
     if (period === 'todo') return true;
     if (period === 'hoy') return d.toDateString() === now.toDateString();
+<<<<<<< HEAD
     if (period === 'mes')
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+=======
+    if (period === 'mes') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     if (period === 'semana') {
       const diff = now.getTime() - d.getTime();
       return diff <= 7 * 24 * 60 * 60 * 1000 && diff >= 0;
     }
     if (period === 'personalizado') {
       const start = this.fechaInicio() ? new Date(this.fechaInicio() + 'T00:00:00') : null;
+<<<<<<< HEAD
       const end = this.fechaFin() ? new Date(this.fechaFin() + 'T23:59:59') : null;
       if (start && end) return d >= start && d <= end;
       if (start) return d >= start;
       if (end) return d <= end;
+=======
+      const end   = this.fechaFin()    ? new Date(this.fechaFin()    + 'T23:59:59') : null;
+      if (start && end) return d >= start && d <= end;
+      if (start) return d >= start;
+      if (end)   return d <= end;
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       return true;
     }
     return true;
   }
 
   ingresosFiltrados = computed(() =>
+<<<<<<< HEAD
     this.firebase
       .allPedidos()
       .filter(
@@ -102,13 +146,51 @@ export class FinanzasComponent {
       categoria: g.categoria,
       timestamp: g.timestamp,
       notas: g.notas,
+=======
+    this.firebase.allPedidos().filter(p =>
+      (p.status === 'entregado' || p.status === 'enviado') &&
+      this.isDateInPeriod(p.timestamp)
+    )
+  );
+
+  gastosFiltrados = computed(() =>
+    this.firebase.allGastos().filter((g: Gasto) => this.isDateInPeriod(g.timestamp))
+  );
+
+  totalIngresos = computed(() => this.ingresosFiltrados().reduce((acc, p) => acc + p.totalPrecio, 0));
+  totalEgresos  = computed(() => this.gastosFiltrados().reduce((acc, g: Gasto) => acc + g.monto, 0));
+  utilidadNeta  = computed(() => this.totalIngresos() - this.totalEgresos());
+
+  historial = computed(() => {
+    const ingresos = this.ingresosFiltrados().map(p => ({
+      id:        p.id,
+      tipo:      'ingreso' as const,
+      monto:     p.totalPrecio,
+      concepto:  p.nombreCliente === 'Venta Mostrador' ? 'Venta en Mostrador' : `Pedido Web - ${p.nombreCliente}`,
+      categoria: 'Venta',
+      timestamp: p.timestamp,
+      notas:     `${p.totalVasos} vasos`
+    }));
+    const egresos = this.gastosFiltrados().map((g: Gasto) => ({
+      id:        g.id,
+      tipo:      'egreso' as const,
+      monto:     g.monto,
+      concepto:  g.concepto,
+      categoria: g.categoria,
+      timestamp: g.timestamp,
+      notas:     g.notas
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     }));
     return [...ingresos, ...egresos].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   });
 
+<<<<<<< HEAD
   setPeriod(p: FilterPeriod) {
     this.period.set(p);
   }
+=======
+  setPeriod(p: FilterPeriod) { this.period.set(p); }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 
   openNuevoGasto() {
     this.gastoMonto.set(null);
@@ -118,6 +200,7 @@ export class FinanzasComponent {
     this.showGastoModal.set(true);
   }
 
+<<<<<<< HEAD
   closeModal() {
     this.showGastoModal.set(false);
   }
@@ -139,6 +222,18 @@ export class FinanzasComponent {
       alert('Por favor ingresa un monto y un concepto.');
       return;
     }
+=======
+  closeModal() { this.showGastoModal.set(false); }
+
+  onGastoMonto(e: Event)    { this.gastoMonto.set(Number((e.target as HTMLInputElement).value) || null); }
+  onGastoConcepto(e: Event) { this.gastoConcepto.set((e.target as HTMLInputElement).value); }
+  onGastoNotas(e: Event)    { this.gastoNotas.set((e.target as HTMLInputElement).value); }
+
+  async saveGasto() {
+    const monto    = this.gastoMonto();
+    const concepto = this.gastoConcepto().trim();
+    if (!monto || !concepto) { alert('Por favor ingresa un monto y un concepto.'); return; }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
 
     this.isSaving.set(true);
     try {
@@ -147,7 +242,11 @@ export class FinanzasComponent {
         concepto,
         categoria: this.gastoCategoria(),
         timestamp: new Date(),
+<<<<<<< HEAD
         notas: this.gastoNotas(),
+=======
+        notas:     this.gastoNotas()
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
       });
       this.closeModal();
     } catch (e) {
@@ -164,11 +263,19 @@ export class FinanzasComponent {
     }
   }
 
+<<<<<<< HEAD
   periodosOptions: { value: FilterPeriod; label: string }[] = [
+=======
+  periodosOptions: { value: FilterPeriod, label: string }[] = [
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     { value: 'hoy', label: 'Hoy' },
     { value: 'semana', label: 'Semana' },
     { value: 'mes', label: 'Mes' },
     { value: 'todo', label: 'Histórico' },
+<<<<<<< HEAD
     { value: 'personalizado', label: 'Fechas' },
+=======
+    { value: 'personalizado', label: 'Fechas' }
+>>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   ];
 }
