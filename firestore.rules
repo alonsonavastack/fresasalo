@@ -1,0 +1,83 @@
+# Reglas de Firestore — Fresas con Crema ALO
+# Copia y pega en Firebase Console → Firestore → Reglas
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Valida la forma mínima de un pedido público antes de aceptarlo.
+    // Evita que alguien mande basura/spam directo a la colección sin pasar
+    // por la app (aunque no requiera login, sí exige la estructura correcta).
+    function isValidPedido(data) {
+      return data.keys().hasAll(['nombreCliente','telefonoCliente','vasos','totalVasos','totalPrecio','timestamp','mensaje'])
+        && data.nombreCliente is string && data.nombreCliente.size() > 0 && data.nombreCliente.size() <= 100
+        && data.telefonoCliente is string && data.telefonoCliente.size() >= 10 && data.telefonoCliente.size() <= 30
+        && data.vasos is list && data.vasos.size() > 0 && data.vasos.size() <= 50
+        && data.totalVasos is number && data.totalVasos > 0 && data.totalVasos <= 500
+        && data.totalPrecio is number && data.totalPrecio >= 0 && data.totalPrecio <= 100000
+        && data.mensaje is string && data.mensaje.size() <= 5000
+        && data.timestamp is timestamp;
+    }
+
+    function isValidVisit(data) {
+      return data.keys().hasAll(['timestamp'])
+        && data.timestamp is timestamp
+        && data.size() <= 3;
+    }
+
+    match /pedidos/{id} {
+      // El cliente público (sin sesión) solo puede CREAR pedidos que cumplan
+      // el formato válido. El personal con sesión iniciada (POS, panel admin)
+      // puede crear registros de venta de mostrador sin esa restricción
+      // (ej. teléfono 'N/A' en ventas físicas sin WhatsApp).
+      allow create: if isValidPedido(request.resource.data) || request.auth != null;
+      allow update, delete: if request.auth != null;
+      allow read: if request.auth != null;
+    }
+
+    match /gastos/{id} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /visits/{id} {
+      allow create: if isValidVisit(request.resource.data);
+      allow update, delete: if request.auth != null;
+      allow read: if request.auth != null;
+    }
+
+    match /toppings/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /cubiertas/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /precios/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /populares/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /productos/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /config/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /usuarios/{id} {
+      allow read, write: if request.auth != null;
+    }
+
+  }
+}

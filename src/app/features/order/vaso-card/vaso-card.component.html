@@ -1,0 +1,173 @@
+<div style="
+  background: var(--bg-card);
+  border: 1px solid rgba(192,38,211,0.25);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+">
+  <!-- Header -->
+  <div
+    [style.background]="combinado()
+      ? 'linear-gradient(135deg, #4a1265, var(--neon))'
+      : 'linear-gradient(135deg, #2a0a3a, var(--neon-dark))'"
+    style="display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem;">
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <span style="font-family:'Cinzel',serif; font-weight:700; font-size:0.95rem; color:white;">
+        🥤 Vaso {{ index() + 1 }}
+      </span>
+      @if (combinado()) {
+        <span style="background:rgba(255,255,255,0.25); color:white; font-size:0.7rem; font-weight:800; padding:1px 8px; border-radius:20px; font-family:'Nunito',sans-serif;">COMBINADO</span>
+      }
+    </div>
+    <button (click)="remove.emit()"
+      style="background:rgba(255,255,255,0.15); border:none; color:white; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:background 0.2s;"
+      onmouseenter="this.style.background='rgba(255,255,255,0.3)'"
+      onmouseleave="this.style.background='rgba(255,255,255,0.15)'">✕</button>
+  </div>
+
+  <!-- Body -->
+  <div style="padding:1rem; display:flex; flex-direction:column; gap:1rem;">
+
+    <!-- Tamaño / Precio -->
+    <div>
+      <label style="display:block; font-size:0.8rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">
+        💰 Tamaño / Precio
+      </label>
+      @if (preciosOrdenados().length === 0) {
+        <p style="font-size:0.8rem; color:var(--texto-muted);">Cargando precios...</p>
+      } @else {
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+          @for (p of preciosOrdenados(); track p.id) {
+            <button (click)="setPrecio(p.precio, p.label)"
+              [style.background]="selectedPrecio() === p.precio ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
+              [style.borderColor]="selectedPrecio() === p.precio ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
+              [style.boxShadow]="selectedPrecio() === p.precio ? '0 0 12px rgba(192,38,211,0.4)' : 'none'"
+              style="border:1px solid; border-radius:8px; padding:0.4rem 0.85rem; color:var(--texto-primary); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; transition:all 0.15s;">
+              {{ p.label }} ${{ p.precio }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Cubierta -->
+    <div>
+      <label style="display:block; font-size:0.8rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">
+        🍫 Cubierta
+      </label>
+      @if (cubiertas().length === 0) {
+        <p style="font-size:0.8rem; color:var(--texto-muted);">Cargando cubiertas...</p>
+      } @else {
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+          <button (click)="setCubierta('')"
+            [style.background]="selectedCubierta() === '' ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
+            [style.borderColor]="selectedCubierta() === '' ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
+            [style.boxShadow]="selectedCubierta() === '' ? '0 0 12px rgba(192,38,211,0.4)' : 'none'"
+            style="border:1px solid; border-radius:8px; padding:0.4rem 0.85rem; color:var(--texto-primary); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:600; transition:all 0.15s;">
+            Sin cubierta
+          </button>
+          @for (c of cubiertas(); track c.id) {
+            <button (click)="setCubierta(c.id)"
+              [style.background]="selectedCubierta() === c.id ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
+              [style.borderColor]="selectedCubierta() === c.id ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
+              [style.boxShadow]="selectedCubierta() === c.id ? '0 0 12px rgba(192,38,211,0.4)' : 'none'"
+              style="border:1px solid; border-radius:8px; padding:0.4rem 0.85rem; color:var(--texto-primary); cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:0.35rem;">
+              @if (c.imageUrl) {
+                <img [src]="c.imageUrl" [alt]="c.name" style="width:18px; height:18px; object-fit:cover; border-radius:4px;" />
+                <span (click)="openPreview(c.imageUrl, c.name, $event)"
+                  style="display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:zoom-in; opacity:0.8;"
+                  title="Ver imagen">🔍</span>
+              }
+              {{ c.name }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Toppings -->
+    <div>
+      <label style="display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; color:var(--texto-secondary); margin-bottom:0.5rem; font-weight:600;">
+        <span>
+          ✨ Toppings
+          <span style="font-weight:400; margin-left:0.35rem; color:var(--texto-muted);">(máx. {{ maxToppings() }})</span>
+        </span>
+        <div style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;" (click)="toggleCombinado()">
+          <span style="font-size:0.75rem; color:var(--texto-primary); font-weight:600; user-select:none;">¿Combinado?</span>
+          <div
+            [style.background]="combinado() ? 'var(--neon)' : 'var(--bg-surface)'"
+            [style.borderColor]="combinado() ? 'var(--neon)' : 'rgba(192,38,211,0.3)'"
+            [style.boxShadow]="combinado() ? '0 0 10px rgba(192,38,211,0.5)' : 'none'"
+            style="width:20px; height:20px; border:2px solid; border-radius:5px; display:flex; align-items:center; justify-content:center; transition:all 0.15s;">
+            @if (combinado()) {
+              <span style="color:white; font-size:0.75rem; font-weight:800;">✓</span>
+            }
+          </div>
+        </div>
+      </label>
+      @if (toppings().length === 0) {
+        <p style="font-size:0.8rem; color:var(--texto-muted);">Cargando toppings...</p>
+      } @else {
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+          @for (t of toppings(); track t.id) {
+            <button (click)="toggleTopping(t.id)"
+              [attr.aria-disabled]="isToppingDisabled(t.id) ? 'true' : null"
+              [style.background]="isToppingSelected(t.id) ? 'linear-gradient(135deg,var(--neon-dark),var(--neon))' : 'var(--bg-surface)'"
+              [style.borderColor]="isToppingSelected(t.id) ? 'var(--neon)' : 'rgba(192,38,211,0.2)'"
+              [style.boxShadow]="isToppingSelected(t.id) ? '0 0 12px rgba(192,38,211,0.4)' : 'none'"
+              [style.opacity]="isToppingDisabled(t.id) ? '0.35' : '1'"
+              [style.cursor]="isToppingDisabled(t.id) ? 'not-allowed' : 'pointer'"
+              style="border:1px solid; border-radius:8px; padding:0.4rem 0.85rem; color:var(--texto-primary); font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:0.35rem;">
+              @if (t.imageUrl) {
+                <img [src]="t.imageUrl" [alt]="t.name" style="width:18px; height:18px; object-fit:cover; border-radius:4px;" />
+                <span (click)="openPreview(t.imageUrl, t.name, $event)"
+                  style="display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem; cursor:zoom-in; opacity:0.8;"
+                  title="Ver imagen">🔍</span>
+              }
+              {{ t.name }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Combinado + Cantidad -->
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <label style="font-size:0.8rem; color:var(--texto-secondary); font-weight:600; white-space:nowrap;">
+        🔢 Cantidad de vasos
+      </label>
+      <input type="number" min="1" [value]="cantidad()"
+        (change)="onCantidadChange($event)"
+        style="width:65px; text-align:center; padding:0.35rem 0.5rem;" />
+    </div>
+
+    <!-- Notas -->
+    <div>
+      <label style="display:block; font-size:0.8rem; color:var(--texto-secondary); margin-bottom:0.4rem; font-weight:600;">
+        📝 Notas (opcional)
+      </label>
+      <textarea rows="2" placeholder="Ej: sin azúcar, extra crema..."
+        [value]="notas()"
+        (input)="onNotasInput($event)"
+        style="resize:none;"></textarea>
+    </div>
+
+  </div>
+
+  <!-- Lightbox: vista ampliada de imagen -->
+  @if (previewImage(); as preview) {
+    <div (click)="closePreview()"
+      style="position:fixed; inset:0; background:rgba(10,0,20,0.88); display:flex; align-items:center; justify-content:center; z-index:1000; padding:2rem; cursor:zoom-out; backdrop-filter:blur(4px);">
+      <div (click)="$event.stopPropagation()"
+        style="position:relative; max-width:90vw; max-height:90vh; display:flex; flex-direction:column; align-items:center; gap:0.75rem;">
+        <button (click)="closePreview()"
+          style="position:absolute; top:-44px; right:0; background:rgba(255,255,255,0.15); border:none; color:white; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center;"
+          onmouseenter="this.style.background='rgba(255,255,255,0.3)'"
+          onmouseleave="this.style.background='rgba(255,255,255,0.15)'">✕</button>
+        <img [src]="preview.url" [alt]="preview.name"
+          style="max-width:100%; max-height:75vh; border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,0.6); cursor:default;" />
+        <span style="color:white; font-family:'Nunito',sans-serif; font-weight:700; font-size:1rem; text-align:center;">{{ preview.name }}</span>
+      </div>
+    </div>
+  }
+</div>
