@@ -9,8 +9,11 @@ export const routes: Routes = [
   },
   {
     path: 'admin/login',
-    loadComponent: () =>
-      import('./features/admin/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
+    // Login temporalmente desactivado para entrar directo.
+    // En un futuro para reactivar el formulario de login:
+    // loadComponent: () => import('./features/admin/admin-login/admin-login.component').then(m => m.AdminLoginComponent),
+    redirectTo: 'admin/dashboard',
+    pathMatch: 'full'
   },
   {
     path: 'admin',

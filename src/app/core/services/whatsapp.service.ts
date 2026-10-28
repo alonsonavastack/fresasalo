@@ -41,23 +41,6 @@ export class WhatsappService {
     return msg;
   }
 
-<<<<<<< HEAD
-  send(nombreCliente: string, telefonoCliente: string, vasos: VasoPedido[]): void {
-    const mensaje = this.buildMessage(nombreCliente, telefonoCliente, vasos);
-    const encoded = encodeURIComponent(mensaje);
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    // wa.me funciona como universal link en iOS y Android; el esquema
-    // whatsapp:// es poco confiable en Safari/iOS.
-    const url = `https://wa.me/${this.phone}?text=${encoded}`;
-
-    if (isIOS) {
-      // En iOS, window.open puede ser bloqueado silenciosamente; location.href
-      // es la forma confiable de navegar a un universal link.
-      window.location.href = url;
-    } else {
-      window.open(url, '_blank');
-    }
-=======
   async send(nombreCliente: string, telefonoCliente: string, vasos: VasoPedido[]): Promise<void> {
     const mensaje     = this.buildMessage(nombreCliente, telefonoCliente, vasos);
     const totalVasos  = vasos.reduce((sum, v) => sum + v.cantidad, 0);
@@ -70,6 +53,5 @@ export class WhatsappService {
       : `https://wa.me/${this.phone}?text=${encoded}`;
 
     window.open(url, '_blank');
->>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   }
 }

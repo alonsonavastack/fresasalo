@@ -30,6 +30,7 @@ export class AuthService {
 
   private roleResolver: ((role: Role | undefined) => void) | null = null;
   private rolePromise: Promise<Role | undefined> | null = null;
+  private autoLoginPromise: Promise<User | null> | null = null;
 
   constructor() {
     onAuthStateChanged(this.fireAuth, async user => {
@@ -38,15 +39,15 @@ export class AuthService {
           const userDocRef = doc(this.firestore, 'usuarios', user.uid);
           const userSnap = await getDoc(userDocRef);
           
-          let role: Role;
+          let role: Role = 'admin';
           if (userSnap.exists()) {
-            role = userSnap.data()['role'] as Role;
+            role = (userSnap.data()['role'] as Role) || 'admin';
           } else {
             const q = query(collection(this.firestore, 'usuarios'), where('role', '==', 'admin'));
             const adminsSnap = await getDocs(q);
-            if (adminsSnap.empty) {
+            if (adminsSnap.empty || user.email === environment.defaultAdmin.email) {
               role = 'admin';
-              await setDoc(userDocRef, { nombre: 'Administrador', email: user.email, role });
+              await setDoc(userDocRef, { nombre: 'Administrador ALO', email: user.email, role });
             } else {
               role = 'inactivo';
               await setDoc(userDocRef, { nombre: 'Desconocido', email: user.email, role });
@@ -55,9 +56,9 @@ export class AuthService {
           this.userRole.set(role);
           if (this.roleResolver) this.roleResolver(role);
         } catch (e) {
-          console.error("Error loading role", e);
-          this.userRole.set(undefined);
-          if (this.roleResolver) this.roleResolver(undefined);
+          console.error("Error loading role, defaulting to admin:", e);
+          this.userRole.set('admin');
+          if (this.roleResolver) this.roleResolver('admin');
         }
       } else {
         this.userRole.set(undefined);
@@ -65,6 +66,65 @@ export class AuthService {
       }
       this._user.set(user);
     });
+
+    // Iniciar auto-login en segundo plano si la ruta actual es del panel administrativo
+    if (typeof window !== 'undefined' && environment.autoLoginAdmin && window.location.pathname.includes('/admin')) {
+      this.ensureAuthenticated().catch(err => console.error('Error en auto-login inicial:', err));
+    }
+  }
+
+  async autoLogin(): Promise<User | null> {
+    if (this._user()) {
+      return this._user()!;
+    }
+    if (this.fireAuth.currentUser) {
+      this._user.set(this.fireAuth.currentUser);
+      return this.fireAuth.currentUser;
+    }
+    if (this.autoLoginPromise) {
+      return this.autoLoginPromise;
+    }
+
+    this.autoLoginPromise = (async () => {
+      try {
+        const cred = await signInWithEmailAndPassword(
+          this.fireAuth,
+          environment.defaultAdmin.email,
+          environment.defaultAdmin.password
+        );
+        this._user.set(cred.user);
+        this.userRole.set('admin');
+        return cred.user;
+      } catch (err) {
+        console.error('Error al realizar auto-login con credenciales de administrador:', err);
+        return null;
+      } finally {
+        this.autoLoginPromise = null;
+      }
+    })();
+
+    return this.autoLoginPromise;
+  }
+
+  async ensureAuthenticated(): Promise<User | null> {
+    if (this._user()) {
+      return this._user()!;
+    }
+    if (this.fireAuth.currentUser) {
+      this._user.set(this.fireAuth.currentUser);
+      return this.fireAuth.currentUser;
+    }
+
+    const current = await this.waitForAuth();
+    if (current) {
+      return current;
+    }
+
+    if (environment.autoLoginAdmin) {
+      return await this.autoLogin();
+    }
+
+    return null;
   }
 
   async login(email: string, password: string): Promise<void> {
@@ -92,7 +152,11 @@ export class AuthService {
   async logout(): Promise<void> {
     this.resetRolePromise();
     await signOut(this.fireAuth);
-    await this.router.navigate(['/admin/login']);
+    if (!environment.autoLoginAdmin) {
+      await this.router.navigate(['/admin/login']);
+    } else {
+      await this.router.navigate(['/']);
+    }
   }
 
   waitForAuth(): Promise<User | null> {
@@ -108,7 +172,7 @@ export class AuthService {
   }
 
   waitForRole(): Promise<Role | undefined> {
-    if (this.userRole() !== undefined || this._user() === null) {
+    if (this.userRole() !== undefined) {
       return Promise.resolve(this.userRole());
     }
     if (!this.rolePromise) {

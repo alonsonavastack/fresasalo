@@ -110,13 +110,46 @@
       }
     </nav>
 
-    <!-- Logout -->
-    <div style="padding:1rem; border-top:1px solid rgba(192,38,211,0.15);">
-      <button (click)="logout()"
-        style="width:100%; padding:0.6rem; background:rgba(139,26,26,0.2); border:1px solid rgba(192,57,57,0.3); border-radius:8px; color:var(--vino-suave); font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s;"
-        onmouseenter="this.style.background='rgba(139,26,26,0.4)'"
-        onmouseleave="this.style.background='rgba(139,26,26,0.2)'"
-      >🚪 Cerrar sesión</button>
+    <!-- Footer Sidebar: Modo Administrador Directo (Login desactivado temporalmente) -->
+    <div style="padding:1rem; border-top:1px solid rgba(192,38,211,0.15); display:flex; flex-direction:column; gap:0.5rem;">
+      <div style="
+        padding: 0.5rem 0.75rem;
+        background: rgba(192,38,211,0.12);
+        border: 1px solid rgba(192,38,211,0.25);
+        border-radius: 8px;
+        color: var(--neon-light);
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+      ">
+        <span>👑</span> Administrador ALO
+      </div>
+      <a routerLink="/"
+        style="
+          width: 100%;
+          padding: 0.5rem;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          color: var(--texto-secondary);
+          text-align: center;
+          font-family: 'Nunito', sans-serif;
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-decoration: none;
+          display: block;
+          transition: all 0.2s;
+        "
+        onmouseenter="this.style.background='rgba(255,255,255,0.1)'"
+        onmouseleave="this.style.background='rgba(255,255,255,0.05)'"
+      >🍓 Ver Tienda Pública</a>
+      <!--
+        Para reactivar el botón de cerrar sesión en el futuro cuando se habilite el login:
+        <button (click)="logout()" ...>🚪 Cerrar sesión</button>
+      -->
     </div>
   </aside>
 

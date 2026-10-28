@@ -9,5 +9,10 @@ export const environment = {
     messagingSenderId: '273658207971',
     appId: '1:273658207971:web:808bb2266b03f623b8efd6'
   },
-  whatsappNumber: '527181043376'
+  whatsappNumber: '527181043376',
+  autoLoginAdmin: true,
+  defaultAdmin: {
+    email: 'admin@fresasalo.com',
+    password: 'admin123'
+  }
 };

@@ -6,13 +6,16 @@ export const authGuard: CanActivateFn = async () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
 
-  // Espera a que Firebase resuelva el estado real de sesión antes de decidir
-  const user = await auth.waitForAuth();
-  if (!user) return router.createUrlTree(['/admin/login']);
+  // Garantiza sesión activa directa con credenciales configuradas
+  const user = await auth.ensureAuthenticated();
+  if (!user) {
+    // Si no hay usuario y no se pudo autenticar, redirigir al login
+    return router.createUrlTree(['/admin/login']);
+  }
 
   const role = await auth.waitForRole();
   if (role === 'inactivo') {
-    auth.logout(); // Opcional, forzar cierre si está inactivo
+    await auth.logout();
     return router.createUrlTree(['/admin/login']);
   }
 

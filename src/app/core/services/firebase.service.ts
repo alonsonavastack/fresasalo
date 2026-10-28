@@ -159,34 +159,16 @@ export class FirebaseService implements OnDestroy {
   }
 
   async incrementVisit(): Promise<void> {
-<<<<<<< HEAD
-    // Registramos el documento de visita (colección pública, siempre debe
-    // funcionar para visitantes anónimos) y, por separado, intentamos
-    // actualizar el contador agregado. Van en try/catch INDEPENDIENTES:
-    // si uno falla (p.ej. el contador, que requiere sesión de admin) no debe
-    // impedir que el otro se guarde.
-    try {
-      await addDoc(collection(this.db, 'visits'), {
-        timestamp: new Date()
-      });
-    } catch { /* no crítico */ }
-
-=======
->>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
     try {
       await setDoc(
         doc(this.db, 'config', 'stats'),
         { visits: increment(1) },
         { merge: true }
       );
-<<<<<<< HEAD
-    } catch { /* no crítico: requiere sesión, puede fallar para visitantes anónimos */ }
-=======
       await addDoc(collection(this.db, 'visits'), {
         timestamp: new Date()
       });
     } catch { /* no crítico */ }
->>>>>>> 3a0aae9b4751934a996c2ea0e48805d964d9c3ee
   }
 
   async savePedido(data: Omit<Pedido, 'id'>): Promise<void> {
